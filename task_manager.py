@@ -56,6 +56,10 @@ def show_menu():
         else:
             break
 
+def add_task(tasks):
+        choice = input("Введи назву завдання: ")
+        tasks.append({"text":choice, "done":False})
+
 
 
 
