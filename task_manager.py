@@ -41,3 +41,21 @@ def login_gate(master_password):
         return True
     else:
         return False
+
+#    if input("Ваш вибір: ") == "1":
+def show_menu():
+    while True:
+        print("1) Додати завдання \n2) Переглянути завдання \n3) видалити завдання \n4) вийти")
+        choice = input("Ваш вибір: ")
+        if choice == "1":
+            add_task()
+        elif choice == "2":
+            view_tasks()
+        elif choice == "3":
+            delete_task()
+        else:
+            break
+
+
+
+
