@@ -68,6 +68,10 @@ def view_tasks(tasks):
 
             print(f"{i}. {task['text']} - {'✓' if task['done'] else '✗'}")
 
+def delete_task(tasks):
+    view_tasks(tasks)
+    choice = int(input("Введіть номер завдання для видалення: "))
+    tasks.pop(choice - 1)
 
 
 
