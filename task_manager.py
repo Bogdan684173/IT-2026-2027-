@@ -25,3 +25,13 @@ def check_password_strength(password):
     else:
         return "слабкий"
 
+def set_master_password():
+    while True:
+        password = input("Введіть пароль: ")
+        check_password_strength(password)=="слабкий":
+            choice = input(" Хочете змінити пароль бо він слабкий? (так/ні): "
+            if choice == "так":
+                password = generate_password(12)
+                return password
+        else:
+            return password
