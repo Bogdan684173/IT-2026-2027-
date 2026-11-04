@@ -117,14 +117,19 @@ def delete_task(tasks):
         print("Завдання з таким номером не існує!")
 
 
+# Головна функція з блокуванням меню
 def main():
     tasks = []
     master_password = set_master_password()
 
-    if login_gate(master_password) == True:
-        show_menu(tasks)
-    else:
+    access_granted = login_gate(master_password)
+
+    if not access_granted:
         print("В доступі відмовлено")
+        print("Робота закінчена")
+        return
+
+    show_menu(tasks)
 
     print("Робота закінчена")
 
