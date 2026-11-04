@@ -1,73 +1,132 @@
 
-# Консольний термінал банкомата
+import random
 
-CORRECT_CARD = "4441"
-CORRECT_PIN = "7421"
 
-authorized = False
+def generate_password(length):
+    characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%"
+    password = ""
 
-print("=== ВІТАЄМО У БАНКІВСЬКОМУ ТЕРМІНАЛІ ===")
+    for i in range(length):
+        password += random.choice(characters)
 
-# Етап 1. Авторизація
-for attempt in range(1, 4):
-    card = input("Введіть останні 4 цифри картки: ")
-    pin = input("Введіть PIN-код: ")
+    print("Згенерований пароль:", password)
+    return password
 
-    if card == CORRECT_CARD and pin == CORRECT_PIN:
-        print("Авторизація успішна!")
-        authorized = True
-        break
+
+def check_password_strength(password):
+    has_digit = False
+    has_upper = False
+
+    for char in password:
+        if char.isdigit():
+            has_digit = True
+        if char.isupper():
+            has_upper = True
+
+    if len(password) >= 8 and has_digit and has_upper:
+        return "надійний"
+    elif len(password) >= 6:
+        return "середній"
     else:
-        attempts_left = 3 - attempt
-        print("Неправильна картка або PIN-код.")
+        return "слабкий"
 
-        if attempts_left > 0:
-            print("Залишилось спроб:", attempts_left)
 
-# Якщо авторизація не пройдена
-if not authorized:
-    print("Картку заблоковано через підозрілу активність!")
-
-else:
-    # Етап 2. Меню банкомата
-    balance = 1000
-
+def set_master_password():
     while True:
-        print("\n=== МЕНЮ БАНКОМАТА ===")
-        print("1 - Перевірити баланс")
-        print("2 - Зняти кошти")
-        print("3 - Поповнити рахунок")
-        print("4 - Вийти")
+        password = input("Введіть пароль: ")
 
-        choice = input("Оберіть дію: ")
+        if check_password_strength(password) == "слабкий":
+            choice = input("Хочете змінити слабкий пароль? (так/ні): ")
+
+            if choice.lower() == "так":
+                password = generate_password(12)
+                return password
+        else:
+            return password
+
+
+# Авторизація з трьома спробами
+def login_gate(master_password):
+    for attempt in range(1, 4):
+        password = input("Введіть пароль: ")
+
+        if password == master_password:
+            print("Авторизація успішна! Вітаємо!")
+            return True
+        else:
+            attempts_left = 3 - attempt
+
+            print(f"Невірний пароль! Спроба {attempt} з 3.")
+            print(f"Залишилося спроб: {attempts_left}")
+
+    print("Доступ заблоковано через підозрілу активність!")
+    return False
+
+
+def show_menu(tasks):
+    while True:
+        print("\n=== МЕНЕДЖЕР ЗАВДАНЬ ===")
+        print("1) Додати завдання")
+        print("2) Переглянути завдання")
+        print("3) Видалити завдання")
+        print("4) Вийти")
+
+        choice = input("Ваш вибір: ")
 
         if choice == "1":
-            print("Ваш баланс:", balance, "грн.")
-
+            add_task(tasks)
         elif choice == "2":
-            amount = float(input("Введіть суму для зняття: "))
-
-            if amount > 0 and amount <= balance:
-                balance = balance - amount
-                print("Гроші успішно знято!")
-                print("Залишок:", balance, "грн.")
-            else:
-                print("Помилка! Некоректна сума або недостатньо коштів.")
-
+            view_tasks(tasks)
         elif choice == "3":
-            amount = float(input("Введіть суму поповнення: "))
-
-            if amount > 0:
-                balance = balance + amount
-                print("Рахунок успішно поповнено!")
-                print("Новий баланс:", balance, "грн.")
-            else:
-                print("Помилка! Сума поповнення має бути більшою за 0.")
-
+            delete_task(tasks)
         elif choice == "4":
-            print("Дякуємо за користування банкоматом!")
+            print("Вихід із менеджера завдань!")
             break
-
         else:
             print("Невідома команда! Спробуйте ще раз.")
 
+
+def add_task(tasks):
+    choice = input("Введи назву завдання: ")
+    tasks.append({"text": choice, "done": False})
+    print("Завдання успішно додано!")
+
+
+def view_tasks(tasks):
+    if not tasks:
+        print("Немає завдань!")
+    else:
+        for i, task in enumerate(tasks, start=1):
+            status = "✓" if task["done"] else "✗"
+            print(f"{i}. {task['text']} - {status}")
+
+
+def delete_task(tasks):
+    if not tasks:
+        print("Немає завдань для видалення!")
+        return
+
+    view_tasks(tasks)
+
+    choice = int(input("Введіть номер завдання для видалення: "))
+
+    if 1 <= choice <= len(tasks):
+        tasks.pop(choice - 1)
+        print("Завдання успішно видалено!")
+    else:
+        print("Завдання з таким номером не існує!")
+
+
+def main():
+    tasks = []
+    master_password = set_master_password()
+
+    if login_gate(master_password) == True:
+        show_menu(tasks)
+    else:
+        print("В доступі відмовлено")
+
+    print("Робота закінчена")
+
+
+main()

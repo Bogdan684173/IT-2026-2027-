@@ -28,8 +28,8 @@ def check_password_strength(password):
 def set_master_password():
     while True:
         password = input("Введіть пароль: ")
-        check_password_strength(password)=="слабкий":
-            choice = input(" Хочете змінити пароль бо він слабкий? (так/ні): "
+        if check_password_strength(password)=="слабкий":
+            choice = input(" Хочете змінити пароль бо він слабкий? (так/ні): ")
             if choice == "так":
                 password = generate_password(12)
                 return password
@@ -73,8 +73,16 @@ def delete_task(tasks):
     choice = int(input("Введіть номер завдання для видалення: "))
     tasks.pop(choice - 1)
 
+def main():
+    tasks = []
+    master_password = set_master_password()
+    if login_gate(master_password)== True:
+        show_menu(tasks)
+    else:
+        print("В доступі відмовлено")
+    print("Робота закінчена")
 
-
+main()
 
 
 
