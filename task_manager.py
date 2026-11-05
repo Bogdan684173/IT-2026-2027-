@@ -1,5 +1,25 @@
 import random
 
+import json
+
+TASKS_FILE = "tasks.json"
+
+def mark_task_done(tasks):
+
+    if len(tasks) == 0:
+        print("Список завдань порожній.")
+        return
+    view_tasks(tasks)
+    number = input("Введи номер виконаного завдання: ")
+    if not number.isdigit():
+        print("Потрібно ввести число.")
+        return
+    number = int(number)
+    if number < 1 or number > len(tasks):
+        print("Немає завдання з таким номером.")
+        return
+    tasks[number - 1]["done"] = True
+    print("Завдання позначено виконаним:", tasks[number - 1]["text"])
 def generate_password(length):
     characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%"
     password = ""
@@ -45,7 +65,7 @@ def login_gate(master_password):
 #    if input("Ваш вибір: ") == "1":
 def show_menu():
     while True:
-        print("1) Додати завдання \n2) Переглянути завдання \n3) видалити завдання \n4) вийти")
+        print("1) Додати завдання \n2) Переглянути завдання \n3) видалити завдання \n4) позначити завдання виконаним \n5) вийти")
         choice = input("Ваш вибір: ")
         if choice == "1":
             add_task()
@@ -53,6 +73,8 @@ def show_menu():
             view_tasks()
         elif choice == "3":
             delete_task()
+        elif choice == "4":
+            mark_task_done(tasks)
         else:
             break
 
