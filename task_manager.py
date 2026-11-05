@@ -68,16 +68,16 @@ def login_gate(master_password):
 
 
 #    if input("Ваш вибір: ") == "1":
-def show_menu():
+def show_menu(tasks):
     while True:
         print("1) Додати завдання \n2) Переглянути завдання \n3) видалити завдання \n4) позначити завдання виконаним \n5) вийти")
         choice = input("Ваш вибір: ")
         if choice == "1":
-            add_task()
+            add_task(tasks)
         elif choice == "2":
-            view_tasks()
+            view_tasks(tasks)
         elif choice == "3":
-            delete_task()
+            delete_task(tasks)
         elif choice == "4":
             mark_task_done(tasks)
         else:
@@ -90,15 +90,15 @@ def add_task(tasks):
 
 
 def save_tasks(tasks, filename=TASKS_FILE):
-with open(filename, "w", encoding="utf-8") as file:
-     json.dump(tasks, file, ensure_ascii=False, indent=2)
+    with open(filename, "w", encoding="utf-8") as file:
+        json.dump(tasks, file, ensure_ascii=False, indent=2)
 
 def load_tasks(filename=TASKS_FILE):
     try:
         with open(filename, "r", encoding="utf-8") as file:
-        return json.load(file)
-except FileNotFoundError:
-    return []
+            return json.load(file)
+    except FileNotFoundError:
+        return []
 
 def view_tasks(tasks):
     if not tasks:
@@ -121,7 +121,7 @@ def main():
         show_menu(tasks)
     else:
         print("В доступі відмовлено")
-    print("Робота закінчена")
+        print("Робота закінчена")
 
 main()
 
