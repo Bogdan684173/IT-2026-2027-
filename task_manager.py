@@ -20,6 +20,8 @@ def mark_task_done(tasks):
         return
     tasks[number - 1]["done"] = True
     print("Завдання позначено виконаним:", tasks[number - 1]["text"])
+
+
 def generate_password(length):
     characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%"
     password = ""
@@ -62,6 +64,8 @@ def login_gate(master_password):
     else:
         return False
 
+
+
 #    if input("Ваш вибір: ") == "1":
 def show_menu():
     while True:
@@ -87,7 +91,13 @@ def save_tasks(tasks, filename=TASKS_FILE):
 with open(filename, "w", encoding="utf-8") as file:
      json.dump(tasks, file, ensure_ascii=False, indent=2)
 
-     
+def load_tasks(filename=TASKS_FILE):
+    try:
+        with open(filename, "r", encoding="utf-8") as file:
+        return json.load(file)
+except FileNotFoundError:
+    return []
+
 def view_tasks(tasks):
     if not tasks:
         print("Немає завдань")
@@ -102,7 +112,7 @@ def delete_task(tasks):
     tasks.pop(choice - 1)
 
 def main():
-    tasks = []
+    tasks = load_tasks()
     master_password = set_master_password()
     if login_gate(master_password)== True:
         show_menu(tasks)
