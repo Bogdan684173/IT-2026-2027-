@@ -82,6 +82,12 @@ def add_task(tasks):
         choice = input("Введи назву завдання: ")
         tasks.append({"text":choice, "done":False})
 
+
+def save_tasks(tasks, filename=TASKS_FILE):
+with open(filename, "w", encoding="utf-8") as file:
+     json.dump(tasks, file, ensure_ascii=False, indent=2)
+
+     
 def view_tasks(tasks):
     if not tasks:
         print("Немає завдань")
