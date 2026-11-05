@@ -20,6 +20,7 @@ def mark_task_done(tasks):
         return
     tasks[number - 1]["done"] = True
     print("Завдання позначено виконаним:", tasks[number - 1]["text"])
+    save_tasks(tasks)
 
 
 def generate_password(length):
@@ -85,6 +86,7 @@ def show_menu():
 def add_task(tasks):
         choice = input("Введи назву завдання: ")
         tasks.append({"text":choice, "done":False})
+        save_tasks(tasks)
 
 
 def save_tasks(tasks, filename=TASKS_FILE):
@@ -110,6 +112,7 @@ def delete_task(tasks):
     view_tasks(tasks)
     choice = int(input("Введіть номер завдання для видалення: "))
     tasks.pop(choice - 1)
+    save_tasks(tasks)
 
 def main():
     tasks = load_tasks()
