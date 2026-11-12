@@ -3,6 +3,8 @@ import random
 import json
 
 TASKS_FILE = "tasks.json"
+STATS_FILE = "stats.json"
+
 
 # Позначення завдання як виконаного
 def mark_task_done(tasks):
@@ -25,9 +27,9 @@ def mark_task_done(tasks):
         return
 
     tasks[number - 1]["done"] = True
-
     print("Завдання позначено виконаним:", tasks[number - 1]["text"])
     save_tasks(tasks)
+
 
 # Генерація пароля
 def generate_password(length):
@@ -39,6 +41,7 @@ def generate_password(length):
 
     print("Згенерований пароль:", password)
     return password
+
 
 # Перевірка надійності пароля
 def check_password_strength(password):
@@ -58,6 +61,7 @@ def check_password_strength(password):
     else:
         return "слабкий"
 
+
 # Створення майстер-пароля
 def set_master_password():
     while True:
@@ -74,6 +78,7 @@ def set_master_password():
         else:
             return password
 
+
 # Перевірка пароля
 def login_gate(master_password):
     password = input("Введіть пароль для входу: ")
@@ -82,6 +87,7 @@ def login_gate(master_password):
         return True
     else:
         return False
+
 
 # Головне меню
 def show_menu(tasks):
@@ -114,6 +120,7 @@ def show_menu(tasks):
         else:
             print("Неправильний вибір! Введіть число від 1 до 5.")
 
+
 # Додавання завдання
 def add_task(tasks):
     choice = input("Введи назву завдання: ").strip()
@@ -124,15 +131,16 @@ def add_task(tasks):
 
     tasks.append({"text": choice, "done": False})
     save_tasks(tasks)
-
     print("Завдання успішно додано!")
+
 
 # Збереження завдань
 def save_tasks(tasks, filename=TASKS_FILE):
     with open(filename, "w", encoding="utf-8") as file:
         json.dump(tasks, file, ensure_ascii=False, indent=2)
 
-# Завантаження завдань
+
+# Завантаження завдань із захистом від пошкодженого JSON
 def load_tasks(filename=TASKS_FILE):
     try:
         with open(filename, "r", encoding="utf-8") as file:
@@ -140,6 +148,11 @@ def load_tasks(filename=TASKS_FILE):
 
     except FileNotFoundError:
         return []
+
+    except json.JSONDecodeError:
+        print("Попередження: файл даних пошкоджено. Створюємо новий список.")
+        return []
+
 
 # Перегляд завдань
 def view_tasks(tasks):
@@ -152,6 +165,7 @@ def view_tasks(tasks):
     for i, task in enumerate(tasks, start=1):
         status = "✓" if task["done"] else "✗"
         print(f"{i}. {task['text']} - {status}")
+
 
 # Видалення завдання
 def delete_task(tasks):
@@ -174,10 +188,30 @@ def delete_task(tasks):
         return
 
     removed_task = tasks.pop(choice - 1)
-
     save_tasks(tasks)
 
     print("Завдання видалено:", removed_task["text"])
+
+
+# Завантаження статистики запусків
+def load_stats():
+    try:
+        with open(STATS_FILE, "r", encoding="utf-8") as file:
+            return json.load(file)
+
+    except FileNotFoundError:
+        return {"runs": 0}
+
+    except json.JSONDecodeError:
+        print("Попередження: файл статистики пошкоджено.")
+        return {"runs": 0}
+
+
+# Збереження статистики запусків
+def save_stats(stats):
+    with open(STATS_FILE, "w", encoding="utf-8") as file:
+        json.dump(stats, file, ensure_ascii=False, indent=2)
+
 
 # Головна функція програми
 def main():
@@ -190,7 +224,15 @@ def main():
         print("Робота закінчена.")
         return
 
+    # Оновлення статистики після успішного входу
+    stats = load_stats()
+    stats["runs"] += 1
+    save_stats(stats)
+
+    print(f"\nВітаємо! Це ваш {stats['runs']}-й сеанс роботи з Менеджером задач!")
+
     show_menu(tasks)
+
 
 # Перевірка запуску програми
 if __name__ == "__main__":
